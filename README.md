@@ -38,7 +38,7 @@ The `--config` flag is for pointing to a JSON file that stores your encryption p
 
 #### --aws_cli
 
-The `--aws_cli` is expecting an executable path to which you can append an `s3` command.
+The `--aws_cli` flag expects an executable path to which you can append an `s3` command.
 
 I use the Docker [aws-cli](https://hub.docker.com/r/amazon/aws-cli) container with an `aws.sh` script:
 ```sh
