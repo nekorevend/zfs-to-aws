@@ -10,13 +10,19 @@ I wrote about the reasoning and design of this tool in detail [here](https://vic
 
 Maybe it'll be useful for others too, but note that my initial baseline backup was hand-made and this script currently only works toward generating the incremental backups. **You must first handle creating the baseline backup that the incremental backups build on.**
 
-It requires that you use ZFS on a *nix system and have the AWS S3 client available.
+The tool requires that you use ZFS on a *nix system and have the AWS S3 client available.
 
-How to run:
+Specifically, you need `aws`, `openssl`, `par2create`, `split`, and `zfs` available in your terminal.
+
+## How to run
 
 ```$ ./backup.py --pool your_zfs_filesystem --dataset your_zfs_dataset --aws_bucket your_aws_bucket --aws_cli path/to/aws/cli --config /path/to/config.json```
 
-Note the `--config` flag is for pointing to a JSON file that stores your encryption passwords, which follows this format:
+### Special notes for some flags
+
+#### --config
+
+The `--config` flag is for pointing to a JSON file that stores your encryption passwords, which follows this format:
 ```json
 {
     "my_dataset_A": {
@@ -30,9 +36,11 @@ Note the `--config` flag is for pointing to a JSON file that stores your encrypt
 
 **Put special care into escaping the special characters in your password!**
 
-Also note the `--aws_cli` is expecting an executable path to which you can append an `s3` command.
+#### --aws_cli
 
-I use the Docker [aws-cli](https://hub.docker.com/r/amazon/aws-cli) container with a `aws.sh` script:
+The `--aws_cli` is expecting an executable path to which you can append an `s3` command.
+
+I use the Docker [aws-cli](https://hub.docker.com/r/amazon/aws-cli) container with an `aws.sh` script:
 ```sh
 #!/bin/bash
 docker run --rm -t $(tty &>/dev/null && echo "-i") -e "AWS_ACCESS_KEY_ID=your_key" -e "AWS_SECRET_ACCESS_KEY=your_secret_key" -e "AWS_DEFAULT_REGION=your_region" -v "$(pwd):/aws" amazon/aws-cli "$@"
